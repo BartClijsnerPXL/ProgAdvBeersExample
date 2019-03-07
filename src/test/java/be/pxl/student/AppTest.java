@@ -16,10 +16,17 @@ import java.util.List;
 public class AppTest {
 
 	App app;
+	Connection connection;
 
 	@Before
 	public void setUp() throws Exception {
-		app = new App("192.168.33.22", "StudentDB", "admin", "admin");
+		app = new App ();
+//		connection = ConnectionFactory.getConnection("jdbc:h2:mem:test;INIT=RUNSCRIPT FROM 'classpath:StudentDB.sql';MODE=MySQL");
+		connection = ConnectionFactory.getConnection(
+				app.createJdbcUrl("192.168.33.22", "StudentDB"),
+				"admin",
+				"admin");
+
 	}
 
 	@Test
@@ -46,25 +53,24 @@ public class AppTest {
 
 	@Test
 	public void it_should_have_a_valid_connection() throws SQLException {
-		Connection connection = app.getConnection();
 		Assert.assertTrue(connection.isValid(0));
 	}
 
 	@Test
 	public void it_should_return_result_list() throws SQLException {
-		List<String> beers = app.getBeerNames();
+		List<String> beers = app.getBeerNames(connection);
 		Assert.assertFalse(beers.isEmpty());
 	}
 
 	@Test
 	public void should_get_price_jupiler_2_55() throws SQLException {
-		Assert.assertEquals(2.55f,app.getBeerPrice("Jupiler"), 0.01f);
+		Assert.assertEquals(2.55f,app.getBeerPrice(connection, "Jupiler"), 0.01f);
 	}
 
 	@Test
 	public void should_update_price_jupiler() throws SQLException {
 		String beerName = "Jupiler";
-		app.updateBeerPrice(beerName, 3.0f);
-		Assert.assertEquals(3.0f,app.getBeerPrice(beerName), 0.01f);
+		app.updateBeerPrice(connection, beerName, 3.0f);
+		Assert.assertEquals(3.0f,app.getBeerPrice(connection, beerName), 0.01f);
 	}
 }
