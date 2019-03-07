@@ -16,14 +16,10 @@ public class App {
 		return "Hello World";
 	}
 
-	public String createJdbcUrl (String server, String databasename) {
-		return "jdbc:mysql://"+server+"/"+databasename;
-	}
-
 	public List<String> getBeerNames(Connection connection) throws SQLException {
 		List<String> beerNames = new ArrayList<>();
 		String queryString = "select * from Beers;";
-		try (ResultSet resultSet = connection.createStatement().executeQuery(queryString)) {
+		try (ResultSet resultSet = connection.prepareStatement(queryString).executeQuery()) {
 			while (resultSet.next()) {
 				beerNames.add(resultSet.getString("Name"));
 			}
@@ -32,15 +28,22 @@ public class App {
 	}
 
 	public float getBeerPrice(Connection connection, String beerName) throws SQLException {
-		try(ResultSet resultSet = connection.createStatement().executeQuery("Select Price from Beers where name='"+beerName+"'")) {
+		String queryString = "Select Price from Beers where name=?";
+
+		try(PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
+			preparedStatement.setString(1, beerName);
+			ResultSet resultSet = preparedStatement.executeQuery();
 			resultSet.first();
 			return resultSet.getFloat(1);
 		}
 	}
 
 	public int updateBeerPrice(Connection connection, String beerName, float price) throws SQLException {
-		try(Statement stmt = connection.createStatement()){
-			return stmt.executeUpdate("update Beers set price="+price+ " where Name='"+beerName+"'");
+		String updateQuery = "update Beers set price=? where Name=?";
+		try(PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)){
+			preparedStatement.setFloat(1, price);
+			preparedStatement.setString(2, beerName);
+			return preparedStatement.executeUpdate();
 		}
 	}
 }

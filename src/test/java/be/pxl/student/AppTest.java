@@ -21,11 +21,7 @@ public class AppTest {
 	@Before
 	public void setUp() throws Exception {
 		app = new App ();
-//		connection = ConnectionFactory.getConnection("jdbc:h2:mem:test;INIT=RUNSCRIPT FROM 'classpath:StudentDB.sql';MODE=MySQL");
-		connection = ConnectionFactory.getConnection(
-				app.createJdbcUrl("192.168.33.22", "StudentDB"),
-				"admin",
-				"admin");
+		connection = ConnectionFactory.getConnection("jdbc:h2:mem:test;INIT=RUNSCRIPT FROM 'classpath:StudentDB.sql';MODE=MySQL");
 
 	}
 
@@ -42,13 +38,6 @@ public class AppTest {
 	@Test
 	public void it_should_return_hello_world() {
 		Assert.assertEquals("Hello World", app.sayHelloWorld());
-	}
-
-	@Test
-	public void it_should_create_jdbc_url() {
-		String servername = "someservername";
-		String databasename = "somedatabasename";
-		Assert.assertEquals("jdbc:mysql://someservername/somedatabasename", app.createJdbcUrl(servername, databasename));
 	}
 
 	@Test
