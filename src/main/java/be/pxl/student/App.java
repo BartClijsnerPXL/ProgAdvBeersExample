@@ -9,25 +9,6 @@ import java.util.List;
  */
 public class App {
 
-	String servername;
-	String databasename;
-	String username;
-	String password;
-
-	String jdbcUrl;
-
-	public App(String servername, String databasename, String username, String password) {
-		this.servername = servername;
-		this.databasename = databasename;
-		this.username = username;
-		this.password = password;
-	}
-
-	public App(String jdbcUrl) {
-		this.jdbcUrl = jdbcUrl;
-	}
-
-
 	public String sayHello() {
 		return "Hello";
 	}
@@ -35,35 +16,6 @@ public class App {
 		return "Hello World";
 	}
 
-	public String createJdbcUrl (String server, String databasename) {
-		return "jdbc:mysql://"+server+"/"+databasename;
-	}
 
-	public Connection getConnection() throws SQLException {
-		return DriverManager.getConnection(jdbcUrl, username, password);
-	}
 
-	public List<String> getBeerNames() throws SQLException {
-		List<String> beerNames = new ArrayList<>();
-		String queryString = "select * from Beers;";
-		try (ResultSet resultSet = getConnection().createStatement().executeQuery(queryString)) {
-			while (resultSet.next()) {
-				beerNames.add(resultSet.getString("Name"));
-			}
-		}
-		return beerNames;
-	}
-
-	public float getBeerPrice(String beerName) throws SQLException {
-		try(ResultSet resultSet = getConnection().createStatement().executeQuery("Select Price from Beers where name='"+beerName+"'")) {
-			resultSet.first();
-			return resultSet.getFloat(1);
-		}
-	}
-
-	public int updateBeerPrice(String beerName, float price) throws SQLException {
-		try(Statement stmt = getConnection().createStatement()){
-			return stmt.executeUpdate("update Beers set price="+price+ " where Name='"+beerName+"'");
-		}
-	}
 }
