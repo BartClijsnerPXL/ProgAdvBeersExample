@@ -1,4 +1,4 @@
-package be.pxl.student.model;
+package be.pxl.student.beers.model;
 
 import java.io.Serializable;
 
