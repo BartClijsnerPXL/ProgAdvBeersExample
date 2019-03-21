@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class ConnectionFactory {
 
 	public static Connection getConnection(String jdbcUrl) throws SQLException {
-		return ConnectionFactory.getConnection(jdbcUrl, null, null);
+		return DriverManager.getConnection(jdbcUrl, null, null);
 	}
 
 	public static Connection getConnection(String jdbcUrl, String username, String password) throws SQLException {
